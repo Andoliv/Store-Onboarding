@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using StoreReact.Models;
+using Store_Onboarding.Server.Models;
 
 #nullable disable
 
-namespace StoreReact.Migrations
+namespace Store_Onboarding.Server.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
     [Migration("20240506081044_InitialCreate")]
@@ -25,7 +25,7 @@ namespace StoreReact.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("StoreReact.Models.Customer", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace StoreReact.Migrations
                     b.ToTable("Customer", (string)null);
                 });
 
-            modelBuilder.Entity("StoreReact.Models.Product", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,7 +84,7 @@ namespace StoreReact.Migrations
                     b.ToTable("Product", (string)null);
                 });
 
-            modelBuilder.Entity("StoreReact.Models.Sales", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Sales", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +128,7 @@ namespace StoreReact.Migrations
                     b.ToTable("Sales", (string)null);
                 });
 
-            modelBuilder.Entity("StoreReact.Models.Store", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Store", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -158,23 +158,23 @@ namespace StoreReact.Migrations
                     b.ToTable("Store", (string)null);
                 });
 
-            modelBuilder.Entity("StoreReact.Models.Sales", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Sales", b =>
                 {
-                    b.HasOne("StoreReact.Models.Customer", "Customer")
+                    b.HasOne("Store_Onboarding.Server.Models.Customer", "Customer")
                         .WithMany("Sales")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Sales_Customer");
 
-                    b.HasOne("StoreReact.Models.Product", "Product")
+                    b.HasOne("Store_Onboarding.Server.Models.Product", "Product")
                         .WithMany("Sales")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Sales_Product");
 
-                    b.HasOne("StoreReact.Models.Store", "Store")
+                    b.HasOne("Store_Onboarding.Server.Models.Store", "Store")
                         .WithMany("Sales")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -188,17 +188,17 @@ namespace StoreReact.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("StoreReact.Models.Customer", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Customer", b =>
                 {
                     b.Navigation("Sales");
                 });
 
-            modelBuilder.Entity("StoreReact.Models.Product", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Product", b =>
                 {
                     b.Navigation("Sales");
                 });
 
-            modelBuilder.Entity("StoreReact.Models.Store", b =>
+            modelBuilder.Entity("Store_Onboarding.Server.Models.Store", b =>
                 {
                     b.Navigation("Sales");
                 });

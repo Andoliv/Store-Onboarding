@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using StoreReact.Models;
-using StoreReact.ViewModels;
+using Store_Onboarding.Server.Models;
+using Store_Onboarding.Server.ViewModels;
 
-namespace StoreReact.Services;
+namespace Store_Onboarding.Server.Services;
 
 public class CustomerService : ICustomerService
 {

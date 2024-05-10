@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace StoreReact.Models;
+namespace Store_Onboarding.Server.Models;
 
 public class Product
 {

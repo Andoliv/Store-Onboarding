@@ -1,4 +1,4 @@
-﻿namespace StoreReact.Models;
+﻿namespace Store_Onboarding.Server.Models;
 
 public class Sales
 {

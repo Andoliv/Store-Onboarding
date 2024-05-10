@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StoreReact.ViewModels;
+namespace Store_Onboarding.Server.ViewModels;
 
 public class CreateCustomerRequest
 {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace StoreReact.Migrations
+namespace Store_Onboarding.Server.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

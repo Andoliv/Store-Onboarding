@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using StoreReact.Mapping;
-using StoreReact.Models;
-using StoreReact.Services;
+using Store_Onboarding.Server.Mapping;
+using Store_Onboarding.Server.Models;
+using Store_Onboarding.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

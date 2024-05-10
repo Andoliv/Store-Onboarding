@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
-using StoreReact.Services;
-using StoreReact.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using Store_Onboarding.Server.Services;
+using Store_Onboarding.Server.ViewModels;
 
-namespace StoreReact.Controllers;
+namespace Store_Onboarding.Server.Controllers;
 
 [ApiController]
 [Route("api/customers")]

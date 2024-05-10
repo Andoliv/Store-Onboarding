@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StoreReact.Models;
+namespace Store_Onboarding.Server.Models;
 
 public class Customer
 {
