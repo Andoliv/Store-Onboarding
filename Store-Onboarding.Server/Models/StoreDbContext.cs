@@ -21,6 +21,10 @@ public class StoreDbContext : DbContext
             entity.ToTable("Product");
 
             entity.HasMany(e => e.Sales).WithOne(s => s.Product).HasForeignKey(s => s.ProductId);
+
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+
+            entity.Property(e => e.Price).IsRequired().HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<Customer>(entity =>
@@ -30,6 +34,10 @@ public class StoreDbContext : DbContext
             entity.ToTable("Customer");
 
             entity.HasMany(e => e.Sales).WithOne(s => s.Customer).HasForeignKey(s => s.CustomerId);
+
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+
+            entity.Property(e => e.Address).IsRequired().HasMaxLength(300);
         });
 
         modelBuilder.Entity<Store>(entity =>
@@ -39,6 +47,10 @@ public class StoreDbContext : DbContext
             entity.ToTable("Store");
 
             entity.HasMany(e => e.Sales).WithOne(s => s.Store).HasForeignKey(s => s.StoreId);
+
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+
+            entity.Property(e => e.Address).IsRequired().HasMaxLength(300);
         });
 
         modelBuilder.Entity<Sales>(entity =>
@@ -70,6 +82,8 @@ public class StoreDbContext : DbContext
                 .WithMany(s => s.Sales)
                 .HasForeignKey(e => e.StoreId)
                 .HasConstraintName("FK_Sales_Store");
+
+            entity.Property(e => e.DateSold).IsRequired();
         });
 
 

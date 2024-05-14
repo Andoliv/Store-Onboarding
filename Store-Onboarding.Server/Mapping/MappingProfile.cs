@@ -22,5 +22,11 @@ public class MappingProfile : Profile
         CreateMap<StoreViewModel, Store>();
         CreateMap<CreateStoreRequest, Store>();
         CreateMap<Store, CreateStoreRequest>();
+
+        CreateMap<Sales, SalesViewModel>();
+        CreateMap<SalesViewModel, Sales>();
+        CreateMap<CreateSalesRequest, Sales>();
+        CreateMap<Sales, CreateSalesRequest>();
+        CreateMap<SalesViewModel, Sales>();
     }
 }

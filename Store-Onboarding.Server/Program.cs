@@ -11,6 +11,7 @@ builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(bu
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<ISalesService, SalesService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

@@ -12,8 +12,8 @@ using Store_Onboarding.Server.Models;
 namespace Store_Onboarding.Server.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20240506081044_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240514221843_Create-Database")]
+    partial class CreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,8 +72,7 @@ namespace Store_Onboarding.Server.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
