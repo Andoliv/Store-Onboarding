@@ -4,8 +4,8 @@ import { Icon } from 'semantic-ui-react';
 
 
 const DeleteModal = (props) => {
-    const id = props.customer ? props.customer.id : null;
-    let title = props.resource ? ` ${props.resource}` : '';
+    const id = props.selectedResource ? props.selectedResource.id : null;
+    let title = props.resourceName ? ` ${props.resourceName}` : '';
 
     return (
         <Modal show={props.show} onHide={props.handleClose}>

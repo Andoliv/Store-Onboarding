@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Table } from 'react-bootstrap';
 import CustomerModal from './CustomerModal';
 import DeleteModal from './DeleteModal';
+import Home from './Home';
 
 export default function Customer () {
     const [customers, setCustomers] = useState([]);
@@ -74,6 +75,7 @@ export default function Customer () {
 
     return (
       <>
+        <Home />
         <div style={{textAlign: 'left', padding: '10px 0'}}>
           <Button variant="primary" onClick={() => onAddCustomer()}>New Customer</Button>{' '}
         </div>
@@ -87,8 +89,8 @@ export default function Customer () {
         <DeleteModal show={showDeleteModal} 
                       handleClose={() => setShowDeleteModal(false)} 
                       handleDelete={handleDelete} 
-                      customer={selectedCustomer}
-                      resource='customer'
+                      selectedResource={selectedCustomer}
+                      resourceName='customer'
         />
         <Table striped bordered hover>
           <thead>
