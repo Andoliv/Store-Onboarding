@@ -15,8 +15,8 @@ export default function Home() {
                 <Nav className="me-auto">
                   <Nav.Link as={Link} to="/customer">Customers</Nav.Link>
                   <Nav.Link as={Link} to="/product">Products</Nav.Link>
-                  {/* <Nav.Link as={Link} to="/store">Stores</Nav.Link>
-                  <Nav.Link as={Link} to="/sale">Sales</Nav.Link> */}
+                  <Nav.Link as={Link} to="/store">Stores</Nav.Link>
+                  {/* <Nav.Link as={Link} to="/sale">Sales</Nav.Link> */}
                 </Nav>
               </Navbar.Collapse>
             </Container>

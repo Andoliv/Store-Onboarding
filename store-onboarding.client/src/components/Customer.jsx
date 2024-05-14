@@ -6,7 +6,7 @@ import CustomerModal from './CustomerModal';
 import DeleteModal from './DeleteModal';
 import Home from './Home';
 
-export default function Customer () {
+function Customer () {
     const [customers, setCustomers] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -108,3 +108,5 @@ export default function Customer () {
       </>
     );
 }
+
+export default Customer;
