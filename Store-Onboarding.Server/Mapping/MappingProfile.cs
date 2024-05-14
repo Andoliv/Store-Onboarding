@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Store_Onboarding.Server.ViewModels;
 using Store_Onboarding.Server.Models;
-using Store_Onboarding.Server.ViewModels;
 
 namespace Store_Onboarding.Server.Mapping;
 
@@ -18,5 +17,10 @@ public class MappingProfile : Profile
         CreateMap<ProductViewModel, Product>();
         CreateMap<CreateProductRequest, Product>();
         CreateMap<Product, CreateProductRequest>();
+
+        CreateMap<Store, StoreViewModel>();
+        CreateMap<StoreViewModel, Store>();
+        CreateMap<CreateStoreRequest, Store>();
+        CreateMap<Store, CreateStoreRequest>();
     }
 }
