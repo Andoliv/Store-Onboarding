@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
 import axios from 'axios';
-import { Table } from 'react-bootstrap';
+import { Button, Table, Icon } from 'semantic-ui-react';
 import CustomerModal from './CustomerModal';
 import DeleteModal from './DeleteModal';
 import Home from './Home';
@@ -41,8 +40,8 @@ function Customer () {
     const handleSave = async (customer) => {
       const response = await axios.post('http://localhost:5097/api/customers', customer);
       fetchCustomer();
-      setShowModal(false);      
-    }
+      setShowModal(false);  
+    };
 
     const handleEdit = async (customer) => {
       const response = await axios.put(`http://localhost:5097/api/customers/${customer.id}`, customer);
@@ -60,16 +59,23 @@ function Customer () {
 
     if (customers.length > 0) {
         tableData = customers.map(customer => 
-            <tr key={customer.id}>
-                <td>{customer.name}</td>
-                <td>{customer.address}</td>
-                <td>
-                    <Button variant="warning" onClick={() => onUpdateCustomer(customer.id)}>Edit</Button>{' '}
-                </td>
-                <td>
-                    <Button variant="danger" onClick={() => onDeleteCustomer(customer.id)}>Delete</Button>{' '}
-                </td>
-            </tr>
+          <Table.Row key={customer.id}>
+            <Table.Cell>{customer.name}</Table.Cell>
+            <Table.Cell>{customer.address}</Table.Cell>
+            <Table.Cell>
+                <Button color='yellow' onClick={() => onUpdateCustomer(customer.id)}>
+                  <Icon name='edit outline' />
+                  Edit
+                </Button>
+                
+            </Table.Cell>
+            <Table.Cell>
+                <Button color='red' onClick={() => onDeleteCustomer(customer.id)}>
+                  <Icon name='trash alternate outline' />
+                  Delete
+                </Button>
+            </Table.Cell>
+          </Table.Row>
         )
     }
 
@@ -77,7 +83,7 @@ function Customer () {
       <>
         <Home />
         <div style={{textAlign: 'left', padding: '10px 0'}}>
-          <Button variant="primary" onClick={() => onAddCustomer()}>New Customer</Button>{' '}
+          <Button color='blue' onClick={onAddCustomer}>New Customer</Button>
         </div>
         <CustomerModal show={showModal} 
                       handleClose={() => setShowModal(false)} 
@@ -92,18 +98,19 @@ function Customer () {
                       selectedResource={selectedCustomer}
                       resourceName='customer'
         />
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Actions</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData}
-          </tbody>
+        <Table celled>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Name</Table.HeaderCell>
+                <Table.HeaderCell>Address</Table.HeaderCell>
+                <Table.HeaderCell>Actions</Table.HeaderCell>
+                <Table.HeaderCell>Actions</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              {tableData}
+            </Table.Body>
         </Table>
       </>
     );

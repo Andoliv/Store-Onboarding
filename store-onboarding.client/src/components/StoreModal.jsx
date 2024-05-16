@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
-import { Icon } from 'semantic-ui-react';
+import { Button, Icon, Modal, Form, Input } from 'semantic-ui-react';
 
 const StoreModal = (props) => {
   const [storeForm, setValues] = useState({
@@ -30,31 +29,29 @@ const StoreModal = (props) => {
   let onSubmit = props.store ? () => props.handleEdit(storeForm) : () => props.handleSave(storeForm);
 
   return (
-    <Modal show={props.show} onHide={props.handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <Modal open={props.show} onClose={props.handleClose} size='tiny'>
+      <Modal.Header>{title}</Modal.Header>
+      <Modal.Content>
         <Form>
-          <Form.Group controlId="formStoreName">
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter name" name='name' value={storeForm.name} onChange={onChange} />
-          </Form.Group>
-          <Form.Group controlId="formStoreAddress">
-            <Form.Label>Address</Form.Label>
-            <Form.Control type="text" placeholder="Enter address" name='address' value={storeForm.address} onChange={onChange} />
-          </Form.Group>
+          <Form.Field>
+            <label>Name</label>
+            <Input type="text" placeholder="Enter name" name='name' value={storeForm.name} onChange={onChange} />
+          </Form.Field>
+          <Form.Field>
+            <label>Address</label>
+            <Input type="text" placeholder="Enter address" name='address' value={storeForm.address} onChange={onChange} />
+          </Form.Field>
         </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant='dark' onClick={props.handleClose}>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button variant="success" onClick={onSubmit}>        
+        <Button positive icon onClick={onSubmit} labelPosition='right'>
           Save Changes
           <Icon name='check' />
         </Button>
-      </Modal.Footer>
+      </Modal.Actions>
     </Modal>
   );
 };

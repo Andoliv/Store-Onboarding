@@ -1,26 +1,32 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import React, { useEffect, useState } from 'react';
+import { Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
-export default function Home() {
+function Home() {
+  const [activeItem, setActiveItem] = useState('');
+
+  const handleItemClick = (name) => setActiveItem(name);
+
+  useEffect(() => {
+    setActiveItem(activeItem);
+  }, [activeItem]);
 
     return (
       <>
-          <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
-            <Container>
-              <Navbar.Brand as={Link} to="/">React</Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="me-auto">
-                  <Nav.Link as={Link} to="/customer">Customers</Nav.Link>
-                  <Nav.Link as={Link} to="/product">Products</Nav.Link>
-                  <Nav.Link as={Link} to="/store">Stores</Nav.Link>
-                  {/* <Nav.Link as={Link} to="/sale">Sales</Nav.Link> */}
-                </Nav>
-              </Navbar.Collapse>
-            </Container>
-          </Navbar> 
+        <Menu inverted>
+          <Menu.Item as={Link} to="/" name='home' 
+            active={activeItem === 'home'} onClick={() => handleItemClick('home')}>React</Menu.Item>
+          <Menu.Item as={Link} to="/customer" name='customers' 
+            active={activeItem === 'customers'} onClick={() => handleItemClick('customers')}>Customers</Menu.Item>
+          <Menu.Item as={Link} to="/product" name='products' 
+            active={activeItem === 'products'} onClick={() => handleItemClick('products')}>Products</Menu.Item>
+          <Menu.Item as={Link} to="/store" name='stores' 
+            active={activeItem === 'stores'} onClick={() => handleItemClick('stores')}>Stores</Menu.Item>
+          <Menu.Item as={Link} to="/sales" name='sales' 
+            active={activeItem === 'sales'} onClick={() => handleItemClick('sales')}>Sales</Menu.Item>
+        </Menu>
       </>
     );
 }
+
+export default Home;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
-import { Icon } from 'semantic-ui-react';
+import { Button, Modal, Form, Input, Icon } from 'semantic-ui-react';
 
 const CustomerModal = (props) => {
   const [customerForm, setValues] = useState({
@@ -11,7 +10,6 @@ const CustomerModal = (props) => {
 
   useEffect(() => {
     if (props.customer) {
-      const { id, name, address } = props.customer;
       setValues({
         id: props.customer.id,
         name: props.customer.name,
@@ -30,32 +28,30 @@ const CustomerModal = (props) => {
   let onSubmit = props.customer ? () => props.handleEdit(customerForm) : () => props.handleSave(customerForm);
 
   return (
-    <Modal show={props.show} onHide={props.handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group controlId="formCustomerName">
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter name" name='name' value={customerForm.name} onChange={onChange} />
-          </Form.Group>
-          <Form.Group controlId="formCustomerAddress">
-            <Form.Label>Address</Form.Label>
-            <Form.Control type="text" placeholder="Enter address" name='address' value={customerForm.address} onChange={onChange} />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant='dark' onClick={props.handleClose}>
+    <Modal open={props.show} onClose={props.handleClose} size='tiny'>
+    <Modal.Header>{title}</Modal.Header>
+    <Modal.Content>
+      <Form>
+        <Form.Field>
+          <label>Name</label>
+          <Input type="text" placeholder="Enter name" name='name' value={customerForm.name} onChange={onChange} />
+        </Form.Field>
+        <Form.Field>
+          <label>Address</label>
+          <Input type="text" placeholder="Enter address" name='address' value={customerForm.address} onChange={onChange} />
+        </Form.Field>
+      </Form>
+    </Modal.Content>
+    <Modal.Actions>
+    <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button variant="success" onClick={onSubmit}>        
+        <Button positive icon onClick={onSubmit} labelPosition='right'>
           Save Changes
-          <Icon name='check' />
+          <Icon name='checkmark' />
         </Button>
-      </Modal.Footer>
-    </Modal>
+    </Modal.Actions>
+  </Modal>
   );
 };
 

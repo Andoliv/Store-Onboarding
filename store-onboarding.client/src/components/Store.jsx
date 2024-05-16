@@ -1,5 +1,5 @@
-import {React, useState, useEffect} from 'react';
-import {Button, Table} from 'react-bootstrap';
+import { React, useState, useEffect } from 'react';
+import { Button, Table, Icon } from 'semantic-ui-react';
 import axios from 'axios';
 import StoreModal from './StoreModal';
 import DeleteModal from './DeleteModal';
@@ -59,37 +59,44 @@ function Store() {
 
     if (stores.length > 0) {
         tableData = stores.map(store => (
-            <tr key={store.id}>
-                <td>{store.name}</td>
-                <td>{store.address}</td>
-                <td>
-                    <Button variant="warning" onClick={() => onUpdateStore(store.id)}>Edit</Button> {' '}
-                </td>
-                <td>
-                    <Button variant="danger" onClick={() => onDeleteStore(store.id)}>Delete</Button> {' '}
-                </td>
-            </tr>
+            <Table.Row key={store.id}>
+                <Table.Cell>{store.name}</Table.Cell>
+                <Table.Cell>{store.address}</Table.Cell>
+                <Table.Cell>
+                    <Button color='yellow' onClick={() => onUpdateStore(store.id)}>
+                        <Icon name='edit outline' />
+                        Edit
+                    </Button>
+                </Table.Cell>
+                <Table.Cell>
+                    <Button color='red' onClick={() => onDeleteStore(store.id)}>
+                        <Icon name='trash alternate outline' />
+                        Delete
+                    </Button>
+                </Table.Cell>
+            </Table.Row>
         ));
     }
 
     return (
         <>
-        <Home />
+            <Home />
             <div style={{textAlign: 'left', padding: '10px 0'}}>
-                <Button variant="primary" onClick={() => onAddStore()}>Add Store</Button>
+                <Button color='blue' onClick={() => onAddStore()}>Add Store</Button>
             </div>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>Actions</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table celled>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell>Name</Table.HeaderCell>
+                        <Table.HeaderCell>Address</Table.HeaderCell>
+                        <Table.HeaderCell>Actions</Table.HeaderCell>
+                        <Table.HeaderCell>Actions</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
                     {tableData}
-                </tbody>
+                </Table.Body>
             </Table>
             <StoreModal show={showModal} 
                 store={selectedStore} 

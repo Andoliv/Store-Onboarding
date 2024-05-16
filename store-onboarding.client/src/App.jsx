@@ -4,6 +4,7 @@ import Home from './components/Home';
 import Customer from './components/Customer';
 import Product from './components/Product';
 import Store from './components/Store';
+import Sales from './components/Sales';
 
 export default function App() {
 
@@ -14,6 +15,7 @@ export default function App() {
                 <Route path="customer" element={<Customer />} /> 
                 <Route path="product" element={<Product />} />
                 <Route path="store" element={<Store />} />
+                <Route path="sales" element={<Sales />} />
             </Routes>
         </>
     );

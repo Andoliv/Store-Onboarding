@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
-import { Icon } from 'semantic-ui-react';
+import { Modal, Form, Button, Icon, Input } from 'semantic-ui-react';
 
 const ProductModal = (props) => {
   const [productForm, setValues] = useState({
@@ -11,7 +10,6 @@ const ProductModal = (props) => {
 
   useEffect(() => {
     if (props.product) {
-      const { id, name, price } = props.product;
       setValues({
         id: props.product.id,
         name: props.product.name,
@@ -30,31 +28,29 @@ const ProductModal = (props) => {
   let onSubmit = props.product ? () => props.handleEdit(productForm) : () => props.handleSave(productForm);
 
   return (
-    <Modal show={props.show} onHide={props.handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <Modal open={props.show} onClose={props.handleClose} size='tiny'>
+      <Modal.Header>{title}</Modal.Header>
+      <Modal.Content>
         <Form>
-          <Form.Group controlId="formProductName">
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter name" name='name' value={productForm.name} onChange={onChange} />
-          </Form.Group>
-          <Form.Group controlId="formProductAddress">
-            <Form.Label>Price</Form.Label>
-            <Form.Control type="number" placeholder="99.99" name='price' value={productForm.price} onChange={onChange} />
-          </Form.Group>
+          <Form.Field>
+            <label>Name</label>
+            <Input type="text" placeholder="Enter name" name='name' value={productForm.name} onChange={onChange} />
+          </Form.Field>
+          <Form.Field>
+            <label>Price</label>
+            <Input type="number" placeholder="99.99" name='price' value={productForm.price} onChange={onChange} />
+          </Form.Field>
         </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant='dark' onClick={props.handleClose}>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button variant="success" onClick={onSubmit}>        
+        <Button positive icon onClick={onSubmit} labelPosition='right'>
           Save Changes
           <Icon name='check' />
         </Button>
-      </Modal.Footer>
+      </Modal.Actions>
     </Modal>
   );
 };

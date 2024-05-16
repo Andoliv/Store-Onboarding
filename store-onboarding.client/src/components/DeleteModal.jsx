@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import { Icon } from 'semantic-ui-react';
+import { Button, Modal, Icon } from 'semantic-ui-react';
 
 
 const DeleteModal = (props) => {
@@ -8,22 +7,20 @@ const DeleteModal = (props) => {
     let title = props.resourceName ? ` ${props.resourceName}` : '';
 
     return (
-        <Modal show={props.show} onHide={props.handleClose}>
-        <Modal.Header closeButton>
-            <Modal.Title>Delete{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            Are you sure you want to delete?
-        </Modal.Body>
-        <Modal.Footer>
-            <Button variant='dark' onClick={props.handleClose}>
-            Close
-            </Button>
-            <Button variant="danger" onClick={() => props.handleDelete(id)}>
-            Delete
-            <Icon name='trash' />
-            </Button>
-        </Modal.Footer>
+        <Modal open={props.show} onClose={props.handleClose} size='tiny'>
+            <Modal.Header>Delete{title}</Modal.Header>
+            <Modal.Content>
+                Are you sure you want to delete?
+            </Modal.Content>
+            <Modal.Actions>
+                <Button color='black' onClick={props.handleClose}>
+                Cancel
+                </Button>
+                <Button negative icon onClick={() => props.handleDelete(id)} labelPosition='right'>
+                Delete
+                <Icon name='close' />
+                </Button>
+            </Modal.Actions>
         </Modal>
     );
 }

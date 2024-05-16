@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Table } from 'react-bootstrap';
+import { Button, Table, Icon } from 'semantic-ui-react';
 import axios from 'axios';
 import Home from './Home';
 import ProductModal from './ProductModal';
@@ -36,16 +36,22 @@ class Product extends Component {
 
         if (products.length > 0) {
             tableData = products.map(product => 
-                <tr key={product.id}>
-                    <td>{product.name}</td>
-                    <td>{product.price}</td>
-                    <td>
-                        <Button variant="warning" onClick={() => this.onUpdateProduct(product.id)}>Edit</Button>{' '}
-                    </td>
-                    <td>
-                        <Button variant="danger" onClick={() => this.onDeleteProduct(product.id)}>Delete</Button>{' '}
-                    </td>
-                </tr>
+                <Table.Row key={product.id}>
+                    <Table.Cell>{product.name}</Table.Cell>
+                    <Table.Cell>${product.price}</Table.Cell>
+                    <Table.Cell>
+                        <Button color='yellow' onClick={() => this.onUpdateProduct(product.id)}>
+                            <Icon name='edit outline' />
+                            Edit
+                        </Button>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <Button color='red' onClick={() => this.onDeleteProduct(product.id)}>
+                            <Icon name='trash alternate outline' />
+                            Delete
+                        </Button>
+                    </Table.Cell>
+                </Table.Row>
             )
         }
 
@@ -98,7 +104,7 @@ class Product extends Component {
             <>
                 <Home />
                 <div style={{textAlign: 'left', padding: '10px 0'}}>
-                    <Button variant="primary" onClick={() => this.onAddProduct()}>New Product</Button>{' '}
+                    <Button color='blue' onClick={() => this.onAddProduct()}>New Product</Button>
                 </div>
                 <ProductModal show={this.state.showModal} 
                     handleClose={() => this.setState({ showModal: false }, () => this.forceUpdateState())} 
@@ -113,18 +119,19 @@ class Product extends Component {
                     selectedResource={this.state.selectedProduct}
                     resourceName='product'
                 />
-                <Table striped bordered hover>
-                    <thead> 
-                        <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                        <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <Table celled>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Name</Table.HeaderCell>
+                            <Table.HeaderCell>Price</Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
                         {this.state.tableData}
-                    </tbody>
+                    </Table.Body>
                 </Table>
             </>
         );
