@@ -4,6 +4,8 @@ namespace Store_Onboarding.Server.ViewModels;
 
 public class CreateSalesRequest
 {
+    public int Id { get; set; }
+
     [Required(ErrorMessage = "Product is required!")]
     public int ProductId { get; set; }
 

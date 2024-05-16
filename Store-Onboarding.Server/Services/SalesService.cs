@@ -18,7 +18,12 @@ public class SalesService : ISalesService
 
     public async Task<IEnumerable<SalesViewModel>> GetSales()
     {
-        var sales = await _context.Sales.ToListAsync();
+        var sales = await _context.Sales
+            .Include(sale => sale.Customer)
+            .Include(sale => sale.Product)
+            .Include(sale => sale.Store)
+            .ToListAsync();
+        
 
         return _mapper.Map<IEnumerable<SalesViewModel>>(sales);
     }
@@ -38,7 +43,8 @@ public class SalesService : ISalesService
     public async Task<SalesViewModel> CreateSale(CreateSalesRequest request)
     {
         var sale = _mapper.Map<Sales>(request);
-        sale.DateSold = DateTime.Now;
+        sale.Created = DateTime.Now;
+        sale.Updated = DateTime.Now;
 
         _context.Sales.Add(sale);
         await _context.SaveChangesAsync();
@@ -46,18 +52,19 @@ public class SalesService : ISalesService
         return _mapper.Map<SalesViewModel>(sale);
     }
 
-    public async Task<SalesViewModel> UpdateSale(SalesViewModel sale)
+    public async Task<SalesViewModel> UpdateSale(CreateSalesRequest request)
     {
-        var saleToUpdate = await _context.Sales.FirstOrDefaultAsync(sale => sale.Id == sale.Id);
+        var saleToUpdate = await _context.Sales.FirstOrDefaultAsync(sale => sale.Id == request.Id);
 
         if (saleToUpdate == null)
         {
             throw new Exception("Sale not found!");
         }
 
-        saleToUpdate = _mapper.Map(sale, saleToUpdate);
+        saleToUpdate = _mapper.Map(request, saleToUpdate);
         saleToUpdate.Updated = DateTime.Now;
 
+        _context.Sales.Update(saleToUpdate);
         await _context.SaveChangesAsync();
 
         return _mapper.Map<SalesViewModel>(saleToUpdate);

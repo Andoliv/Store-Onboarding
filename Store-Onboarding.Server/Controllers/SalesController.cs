@@ -41,31 +41,31 @@ public class SalesController : Controller
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(SalesViewModel), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(CreateSalesRequest), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateSale([FromBody] CreateSalesRequest sale)
+    public async Task<IActionResult> CreateSale([FromBody] CreateSalesRequest request)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var newSale = await _saleService.CreateSale(sale);
+        var newSale = await _saleService.CreateSale(request);
 
         return CreatedAtAction(nameof(GetSale), new { id = newSale.Id }, newSale);
-    }
+    }   
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(SalesViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CreateSalesRequest), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateSale(int id, [FromBody] SalesViewModel sale)
+    public async Task<IActionResult> UpdateSale(int id, [FromBody] CreateSalesRequest request)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var updatedSale = await _saleService.UpdateSale(sale);
+        var updatedSale = await _saleService.UpdateSale(request);
 
         return Ok(updatedSale);
     }
