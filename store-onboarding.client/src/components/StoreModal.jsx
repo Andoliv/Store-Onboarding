@@ -47,13 +47,17 @@ const StoreModal = (props) => {
         <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right'>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
           Save Changes
           <Icon name='check' />
         </Button>
       </Modal.Actions>
     </Modal>
   );
+
+  function fieldsValidation() {
+    return !storeForm.name || !storeForm.address || storeForm.name.length < 3 || storeForm.address.length < 3;
+  }
 };
 
 export default StoreModal;

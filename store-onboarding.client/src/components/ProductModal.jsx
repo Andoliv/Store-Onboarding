@@ -46,13 +46,17 @@ const ProductModal = (props) => {
         <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right'>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
           Save Changes
           <Icon name='check' />
         </Button>
       </Modal.Actions>
     </Modal>
   );
+
+  function fieldsValidation() {
+    return !productForm.name || !productForm.price || productForm.name.length < 3 || productForm.price < 0.01;
+  }
 };
 
 export default ProductModal;

@@ -136,7 +136,7 @@ const SalesModal = (props) => {
         <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right'>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
           Save Changes
           <Icon name='checkmark' />
         </Button>        
@@ -144,6 +144,10 @@ const SalesModal = (props) => {
     </Modal>
     </>
   );
+
+  function fieldsValidation() {
+    return !salesForm.customer.id || !salesForm.product.id || !salesForm.store.id || !salesForm.dateSold;
+  }
 }
 
 export default SalesModal;

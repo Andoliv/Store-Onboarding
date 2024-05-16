@@ -32,11 +32,11 @@ const CustomerModal = (props) => {
     <Modal.Header>{title}</Modal.Header>
     <Modal.Content>
       <Form>
-        <Form.Field>
+        <Form.Field required>
           <label>Name</label>
           <Input type="text" placeholder="Enter name" name='name' value={customerForm.name} onChange={onChange} />
         </Form.Field>
-        <Form.Field>
+        <Form.Field required>
           <label>Address</label>
           <Input type="text" placeholder="Enter address" name='address' value={customerForm.address} onChange={onChange} />
         </Form.Field>
@@ -46,13 +46,17 @@ const CustomerModal = (props) => {
     <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right'>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
           Save Changes
           <Icon name='checkmark' />
         </Button>
     </Modal.Actions>
   </Modal>
   );
+
+  function fieldsValidation() {
+    return !customerForm.name || !customerForm.address || customerForm.name.length < 3 || customerForm.address.length < 3;
+  }
 };
 
 export default CustomerModal;
