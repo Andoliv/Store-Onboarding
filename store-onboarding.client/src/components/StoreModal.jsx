@@ -25,6 +25,10 @@ const StoreModal = (props) => {
     setValues({ ...storeForm, [e.target.name]: e.target.value });
   }
 
+  const fieldsValidation = () => {
+    return !storeForm.name || !storeForm.address || storeForm.name.length < 3 || storeForm.address.length < 3;
+  }
+
   let title = props.store ? 'Edit Store' : 'New Store';
   let onSubmit = props.store ? () => props.handleEdit(storeForm) : () => props.handleSave(storeForm);
 
@@ -54,10 +58,6 @@ const StoreModal = (props) => {
       </Modal.Actions>
     </Modal>
   );
-
-  function fieldsValidation() {
-    return !storeForm.name || !storeForm.address || storeForm.name.length < 3 || storeForm.address.length < 3;
-  }
 };
 
 export default StoreModal;

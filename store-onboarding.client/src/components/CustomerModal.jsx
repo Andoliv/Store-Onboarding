@@ -24,6 +24,10 @@ const CustomerModal = (props) => {
     setValues({ ...customerForm, [e.target.name]: e.target.value });
   }
 
+  const fieldsValidation = () => {
+    return !customerForm.name || !customerForm.address || customerForm.name.length < 3 || customerForm.address.length < 3;
+  }
+
   let title = props.customer ? 'Edit Customer' : 'New Customer';
   let onSubmit = props.customer ? () => props.handleEdit(customerForm) : () => props.handleSave(customerForm);
 
@@ -46,7 +50,7 @@ const CustomerModal = (props) => {
     <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation}>
           Save Changes
           <Icon name='checkmark' />
         </Button>
@@ -54,9 +58,6 @@ const CustomerModal = (props) => {
   </Modal>
   );
 
-  function fieldsValidation() {
-    return !customerForm.name || !customerForm.address || customerForm.name.length < 3 || customerForm.address.length < 3;
-  }
 };
 
 export default CustomerModal;

@@ -108,6 +108,10 @@ const SalesModal = (props) => {
     }});
   };
 
+  const fieldsValidation = () => {
+    return !salesForm.customer.id || !salesForm.product.id || !salesForm.store.id || !salesForm.dateSold;
+  }
+
   return (
     <>
     <Modal open={props.show} onClose={props.handleClose} size='tiny'>
@@ -144,10 +148,6 @@ const SalesModal = (props) => {
     </Modal>
     </>
   );
-
-  function fieldsValidation() {
-    return !salesForm.customer.id || !salesForm.product.id || !salesForm.store.id || !salesForm.dateSold;
-  }
 }
 
 export default SalesModal;

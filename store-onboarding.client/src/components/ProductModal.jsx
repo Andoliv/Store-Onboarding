@@ -24,6 +24,10 @@ const ProductModal = (props) => {
     setValues({ ...productForm, [e.target.name]: e.target.value });
   }
 
+  const fieldsValidation = () => {
+    return !productForm.name || !productForm.price || productForm.name.length < 3 || productForm.price < 0.01;
+  }
+
   let title = props.product ? 'Edit Product' : 'New Product';
   let onSubmit = props.product ? () => props.handleEdit(productForm) : () => props.handleSave(productForm);
 
@@ -46,17 +50,13 @@ const ProductModal = (props) => {
         <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation}>
           Save Changes
           <Icon name='check' />
         </Button>
       </Modal.Actions>
     </Modal>
   );
-
-  function fieldsValidation() {
-    return !productForm.name || !productForm.price || productForm.name.length < 3 || productForm.price < 0.01;
-  }
 };
 
 export default ProductModal;
