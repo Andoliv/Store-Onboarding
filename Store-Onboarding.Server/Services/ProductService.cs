@@ -71,7 +71,7 @@ public class ProductService : IProductService
 
         if (product == null)
         {
-            throw new Exception("Product not found!");
+            throw new KeyNotFoundException("Product not found!");
         }
 
         _context.Products.Remove(product);

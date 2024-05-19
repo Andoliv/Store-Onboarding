@@ -23,7 +23,7 @@ public class SalesService : ISalesService
             .Include(sale => sale.Product)
             .Include(sale => sale.Store)
             .ToListAsync();
-        
+
 
         return _mapper.Map<IEnumerable<SalesViewModel>>(sales);
     }
@@ -70,18 +70,16 @@ public class SalesService : ISalesService
         return _mapper.Map<SalesViewModel>(saleToUpdate);
     }
 
-    public async Task<SalesViewModel> DeleteSale(int id)
+    public async Task DeleteSale(int id)
     {
         var sale = await _context.Sales.FirstOrDefaultAsync(sale => sale.Id == id);
 
         if (sale == null)
         {
-            throw new Exception("Sale not found!");
+            throw new KeyNotFoundException("Sale not found!");
         }
 
         _context.Sales.Remove(sale);
         await _context.SaveChangesAsync();
-
-        return _mapper.Map<SalesViewModel>(sale);
     }
 }

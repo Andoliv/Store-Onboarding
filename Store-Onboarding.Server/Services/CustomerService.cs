@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Store_Onboarding.Server.Models;
 using Store_Onboarding.Server.ViewModels;
+using System.Data.Common;
 
 namespace Store_Onboarding.Server.Services;
 
@@ -71,11 +73,10 @@ public class CustomerService : ICustomerService
 
         if (customer == null)
         {
-            throw new Exception("Customer not found!");
+            throw new KeyNotFoundException("Customer not found!");
         }
 
         _context.Customers.Remove(customer);
         await _context.SaveChangesAsync();
-
     }
 }

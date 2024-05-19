@@ -8,5 +8,5 @@ public interface IStoreService
     Task<StoreViewModel> GetStore(int id);
     Task<StoreViewModel> CreateStore(CreateStoreRequest request);
     Task<StoreViewModel> UpdateStore(int id, CreateStoreRequest request);
-    Task<StoreViewModel> DeleteStore(int id);
+    Task DeleteStore(int id);
 }

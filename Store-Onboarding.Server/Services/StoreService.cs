@@ -64,19 +64,17 @@ public class StoreService : IStoreService
         return _mapper.Map<StoreViewModel>(store);
     }
 
-    public async Task<StoreViewModel> DeleteStore(int id)
+    public async Task DeleteStore(int id)
     {
         var store = await _context.Stores.FirstOrDefaultAsync(store => store.Id == id);
 
         if (store == null)
         {
-            throw new Exception("Store not found!");
+            throw new KeyNotFoundException("Store not found!");
         }
 
         _context.Stores.Remove(store);
         await _context.SaveChangesAsync();
-
-        return _mapper.Map<StoreViewModel>(store);
     }
 
 }

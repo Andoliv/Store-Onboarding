@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store_Onboarding.Server.Services;
 using Store_Onboarding.Server.ViewModels;
+using System.Data.Common;
 
 namespace Store_Onboarding.Server.Controllers;
 
@@ -9,81 +10,177 @@ namespace Store_Onboarding.Server.Controllers;
 public class ProductController : Controller
 {
     private readonly IProductService _productService;
+    private readonly ILogger<ProductController> _logger;
 
-    public ProductController(IProductService productService)
+    private const string _logInvalidProductId = "Invalid product id sent from client.";
+    private const string _logInvalidProductObject = "Invalid product object sent from client.";
+
+    public ProductController(IProductService productService, ILogger<ProductController> logger)
     {
         _productService = productService;
+        _logger = logger;
     }
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ProductViewModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetProducts()
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetProductsAsync()
     {
-        var products = await _productService.GetProducts();
+        try
+        {
+            var products = await _productService.GetProducts();
 
-        return Ok(products);
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside GetProductsAsync action: {ex.Message}");
+
+            return Problem(ex.Message);
+        }
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProductViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetProduct(int id)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetProductAsync([FromRoute] int id)
     {
-        var product = await _productService.GetProduct(id);
-
-        if (product == null)
+        try
         {
-            return NotFound();
+            if (id.Equals(null) || id <= 0)
+            {
+                _logger.LogError(_logInvalidProductId);
+
+                return BadRequest("Product id must be greater than zero.");
+            }
+
+            var product = await _productService.GetProduct(id);
+
+            if (product == null)
+            {
+                _logger.LogError($"Product with id {id} not found.");
+
+                return NotFound();
+            }
+
+            return Ok(product);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside GetProductAsync action: {ex.Message}");
+
+            return Problem(ex.Message);
         }
 
-        return Ok(product);
     }
 
     [HttpPost]
     [ProducesResponseType(typeof(ProductViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductRequest request)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError(_logInvalidProductObject);
+
+                return BadRequest(ModelState);
+            }
+
+            var product = await _productService.CreateProduct(request);
+
+            if (product == null)
+            {
+                _logger.LogError(_logInvalidProductObject);
+
+                return BadRequest(_logInvalidProductObject);
+            }
+
+            return CreatedAtAction(nameof(GetProductAsync), new { id = product.Id }, product);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside CreateProductAsync action: {ex.Message}");
 
-        var product = await _productService.CreateProduct(request);
-
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+            return Problem(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(ProductViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateProduct(int id, [FromBody] CreateProductRequest request)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateProductAsync([FromRoute] int id, [FromBody] CreateProductRequest request)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
+            if (id.Equals(null) || id <= 0)
+            {
+                _logger.LogError(_logInvalidProductId);
+
+                return BadRequest("Product id must be greater than zero.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError(_logInvalidProductObject);
+
+                return BadRequest(ModelState);
+            }
+
+            var product = await _productService.UpdateProduct(id, request);
+
+            if (product == null)
+            {
+                _logger.LogError(_logInvalidProductObject);
+
+                return BadRequest(_logInvalidProductObject);
+            }
+
+            return Ok(product);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside UpdateProductAsync action: {ex.Message}");
 
-        var product = await _productService.UpdateProduct(id, request);
-
-        return Ok(product);
+            return Problem(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteProduct(int id)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteProductAsync([FromRoute] int id)
     {
-        var product = await _productService.GetProduct(id);
-
-        if (product == null)
+        try
         {
+            if (id.Equals(null) || id <= 0)
+            {
+                _logger.LogError(_logInvalidProductId);
+
+                return BadRequest("Product id must be greater than zero.");
+            }
+
+            await _productService.DeleteProduct(id);
+
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            _logger.LogError($"Something went wrong inside DeleteProductAsync action: {ex.Message}");
+
             return NotFound();
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside DeleteProductAsync action: {ex.Message}");
 
-        await _productService.DeleteProduct(id);
-
-        return NoContent();
+            return Problem(ex.Message);
+        }
     }
 }

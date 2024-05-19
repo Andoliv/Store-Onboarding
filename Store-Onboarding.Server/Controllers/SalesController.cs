@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store_Onboarding.Server.Services;
 using Store_Onboarding.Server.ViewModels;
+using System.Data.Common;
 
 namespace Store_Onboarding.Server.Controllers;
 
@@ -9,74 +10,179 @@ namespace Store_Onboarding.Server.Controllers;
 public class SalesController : Controller
 {
     private readonly ISalesService _saleService;
+    private readonly ILogger<SalesController> _logger;
 
-    public SalesController(ISalesService saleService)
+    private const string _logInvalidSaleId = "Invalid sale id sent from client.";
+    private const string _logInvalidSaleObject = "Invalid sale object sent from client.";
+
+    public SalesController(ISalesService saleService, ILogger<SalesController> logger)
     {
         _saleService = saleService;
+        _logger = logger;
     }
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<SalesViewModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetSales()
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetSalesAsync()
     {
-        var sales = await _saleService.GetSales();
+        try
+        {
+            var sales = await _saleService.GetSales();
 
-        return Ok(sales);
+            return Ok(sales);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside GetSalesAsync action: {ex.Message}");
+
+            return Problem(ex.Message);
+        }
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(SalesViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetSale(int id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetSaleAsync([FromRoute] int id)
     {
-        var sale = await _saleService.GetSale(id);
-
-        if (sale == null)
+        try
         {
-            return NotFound();
-        }
+            if (id.Equals(null) || id <= 0)
+            {
+                _logger.LogError($"Invalid sale id: {id}");
 
-        return Ok(sale);
+                return BadRequest("Sale id must be greater than zero.");
+            }
+
+            var sale = await _saleService.GetSale(id);
+
+            if (sale == null)
+            {
+                _logger.LogError($"Sale with id {id} not found.");
+
+                return NotFound();
+            }
+
+            return Ok(sale);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside GetSaleAsync action: {ex.Message}");
+
+            return Problem(ex.Message);
+        }
     }
 
     [HttpPost]
     [ProducesResponseType(typeof(CreateSalesRequest), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateSale([FromBody] CreateSalesRequest request)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateSaleAsync([FromBody] CreateSalesRequest request)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError(_logInvalidSaleObject);
+
+                return BadRequest(ModelState);
+            }
+
+            var newSale = await _saleService.CreateSale(request);
+
+            if (newSale == null)
+            {
+                _logger.LogError(_logInvalidSaleObject);
+
+                return BadRequest(_logInvalidSaleObject);
+            }
+
+            return CreatedAtAction(nameof(GetSaleAsync), new { id = newSale.Id }, newSale);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside CreateSaleAsync action: {ex.Message}");
 
-        var newSale = await _saleService.CreateSale(request);
-
-        return CreatedAtAction(nameof(GetSale), new { id = newSale.Id }, newSale);
-    }   
+            return Problem(ex.Message);
+        }
+    }
 
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(CreateSalesRequest), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateSale(int id, [FromBody] CreateSalesRequest request)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateSaleAsync([FromRoute] int id, [FromBody] CreateSalesRequest request)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
+            if (id.Equals(null) || id <= 0)
+            {
+                _logger.LogError(_logInvalidSaleId);
+
+                return BadRequest("Sale id must be greater than zero.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError(_logInvalidSaleObject);
+
+                return BadRequest(ModelState);
+            }
+
+            var updatedSale = await _saleService.UpdateSale(request);
+
+            if (updatedSale != null)
+            {
+                _logger.LogError($"Sale with id {id} not found.");
+
+                return NotFound();
+            }
+
+            return Ok(updatedSale);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside UpdateSaleAsync action: {ex.Message}");
 
-        var updatedSale = await _saleService.UpdateSale(request);
-
-        return Ok(updatedSale);
+            return Problem(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteSale(int id)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteSaleAsync([FromRoute] int id)
     {
-        await _saleService.DeleteSale(id);
+        try
+        {
+            if (id.Equals(null) || id <= 0)
+            {
+                _logger.LogError(_logInvalidSaleId);
 
-        return NoContent();
+                return BadRequest("Sale id must be greater than zero.");
+            }
+
+            await _saleService.DeleteSale(id);
+
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            _logger.LogError($"Something went wrong inside DeleteSaleAsync action: {ex.Message}");
+
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong inside DeleteSaleAsync action: {ex.Message}");
+
+            return Problem(ex.Message);
+        }
     }
 }

@@ -8,5 +8,5 @@ public interface ISalesService
     Task<SalesViewModel> GetSale(int id);
     Task<SalesViewModel> CreateSale(CreateSalesRequest request);
     Task<SalesViewModel> UpdateSale(CreateSalesRequest request);
-    Task<SalesViewModel> DeleteSale(int id);
+    Task DeleteSale(int id);
 }
