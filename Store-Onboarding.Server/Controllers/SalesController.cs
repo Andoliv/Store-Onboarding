@@ -101,7 +101,7 @@ public class SalesController : Controller
                 return BadRequest(_logInvalidSaleObject);
             }
 
-            return CreatedAtAction(nameof(GetSaleAsync), new { id = newSale.Id }, newSale);
+            return CreatedAtAction("GetSale", new { id = newSale.Id }, newSale);
         }
         catch (Exception ex)
         {

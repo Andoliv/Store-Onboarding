@@ -100,7 +100,7 @@ public class StoreController : Controller
                 return BadRequest(_logInvalidStoreObject);
             }
 
-            return CreatedAtAction(nameof(GetStoreAsync), new { id = newStore.Id }, newStore);
+            return CreatedAtAction("GetStore", new { id = newStore.Id }, newStore);
         }
         catch (Exception ex)
         {

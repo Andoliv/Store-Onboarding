@@ -100,7 +100,7 @@ public class ProductController : Controller
                 return BadRequest(_logInvalidProductObject);
             }
 
-            return CreatedAtAction(nameof(GetProductAsync), new { id = product.Id }, product);
+            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
         catch (Exception ex)
         {

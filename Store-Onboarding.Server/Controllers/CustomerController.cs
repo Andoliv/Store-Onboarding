@@ -100,7 +100,7 @@ public class CustomerController : Controller
                 return BadRequest(_logInvalidCustomerObject);
             }
 
-            return CreatedAtAction(nameof(GetCustomerAsync), new { id = customer.Id }, customer);
+            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
         }
         catch (Exception ex)
         {
