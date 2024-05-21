@@ -10,14 +10,24 @@ function Customer () {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [tableData, setTableData] = useState(null);
 
     useEffect(() => {
-        fetchCustomer();
-    }, []);
+      fetchCustomer();
+
+      if (customers.length > 0) {
+        renderTableData();
+      }
+    }, [customers]);
 
     const fetchCustomer = async () => {
+      try {
         const response = await axios.get('http://localhost:5097/api/customers');
         setCustomers(response.data);
+        renderTableData();
+      } catch (error) {
+        console.error(error);
+      }        
     }
 
     const onAddCustomer = () => {
@@ -26,78 +36,146 @@ function Customer () {
     }
 
     const onUpdateCustomer = (id) => {
+      if (!id) {
+        console.error('ID is not provided');
+        return;
+      }
+
       const customer = customers.find(c => c.id === id);
+
+      if (!customer) {
+        console.error('Customer not found');
+        return;
+      }
+
       setSelectedCustomer(customer);
       setShowModal(true);
     }
 
     const onDeleteCustomer = (id) => {
+      if (!id) {
+        console.error('ID is not provided');
+        return;
+      }
+
       const customer = customers.find(c => c.id === id);
+
+      if (!customer) {
+        console.error('Customer not found');
+        return;
+      }
+
       setSelectedCustomer(customer);
       setShowDeleteModal(true);
     }
 
     const handleSave = async (customer) => {
-      const response = await axios.post('http://localhost:5097/api/customers', customer);
-      fetchCustomer();
-      setShowModal(false);  
+      if (!customer) {
+        console.error('Invalid customer');
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://localhost:5097/api/customers', customer);
+        if (!response.data) {
+          console.error('No data in response');
+          return;
+        }
+        
+        fetchCustomer();
+        setShowModal(false);
+      } catch (error) {
+        console.error(error);
+      }
+        
     };
 
     const handleEdit = async (customer) => {
-      const response = await axios.put(`http://localhost:5097/api/customers/${customer.id}`, customer);
-      fetchCustomer();
-      setShowModal(false);
+      if (!customer) {
+        console.error('Invalid customer');
+        return;
+      }
+
+      try {
+        const response = await axios.put(`http://localhost:5097/api/customers/${customer.id}`, customer);
+        if (!response.data) {
+          console.error('No data in response');
+          return;
+        }
+
+        fetchCustomer();
+        setShowModal(false);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     const handleDelete = async (id) => {
-      const response = await axios.delete(`http://localhost:5097/api/customers/${id}`);
-      fetchCustomer();
-      setShowDeleteModal(false);
+      if (!id) {
+        console.error('ID is not provided');
+        return;
+      }
+
+      try {
+        const response = await axios.delete(`http://localhost:5097/api/customers/${id}`);
+        if (response.status !== 204) {
+          console.error('Unexpected status code: ' + response.status);
+          return;
+        }
+
+        fetchCustomer();
+        setShowDeleteModal(false);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
-    let tableData = null;
-
-    if (customers.length > 0) {
-        tableData = customers.map(customer => 
-          <Table.Row key={customer.id}>
-            <Table.Cell>{customer.name}</Table.Cell>
-            <Table.Cell>{customer.address}</Table.Cell>
-            <Table.Cell>
-                <Button color='yellow' onClick={() => onUpdateCustomer(customer.id)}>
-                  <Icon name='edit outline' />
-                  Edit
-                </Button>
-                
-            </Table.Cell>
-            <Table.Cell>
-                <Button color='red' onClick={() => onDeleteCustomer(customer.id)}>
-                  <Icon name='trash alternate outline' />
-                  Delete
-                </Button>
-            </Table.Cell>
-          </Table.Row>
-        )
+    const renderTableData = () => {
+        let tableData = customers.map(customer => 
+            <Table.Row key={customer.id}>
+              <Table.Cell>{customer.name}</Table.Cell>
+              <Table.Cell>{customer.address}</Table.Cell>
+              <Table.Cell>
+                  <Button color='yellow' onClick={() => onUpdateCustomer(customer.id)}>
+                    <Icon name='edit outline' />
+                    Edit
+                  </Button>
+                  
+              </Table.Cell>
+              <Table.Cell>
+                  <Button color='red' onClick={() => onDeleteCustomer(customer.id)}>
+                    <Icon name='trash alternate outline' />
+                    Delete
+                  </Button>
+              </Table.Cell>
+            </Table.Row>
+          );    
+        
+        setTableData(tableData);
     }
+    
 
     return (
       <>
         <Home />
         <div style={{textAlign: 'left', padding: '10px 0'}}>
-          <Button color='blue' onClick={onAddCustomer}>New Customer</Button>
+          <Button color='blue' onClick={() => onAddCustomer()}>New Customer</Button>
         </div>
-        <CustomerModal show={showModal} 
-                      handleClose={() => setShowModal(false)} 
-                      handleSave={handleSave} 
-                      handleEdit={handleEdit} 
-                      handleDelete={handleDelete}
-                      customer={selectedCustomer}
-        />
-        <DeleteModal show={showDeleteModal} 
-                      handleClose={() => setShowDeleteModal(false)} 
-                      handleDelete={handleDelete} 
-                      selectedResource={selectedCustomer}
-                      resourceName='customer'
-        />
+        {showModal && <CustomerModal show={showModal}
+            handleClose={() => setShowModal(false)} 
+            handleSave={handleSave} 
+            handleEdit={handleEdit} 
+            handleDelete={handleDelete}
+            customer={selectedCustomer}
+          />
+        }
+        {showDeleteModal && <DeleteModal show={showDeleteModal} 
+            handleClose={() => setShowDeleteModal(false)} 
+            handleDelete={handleDelete} 
+            selectedResource={selectedCustomer}
+            resourceName='customer'
+          />
+        }
         <Table celled>
             <Table.Header>
               <Table.Row>

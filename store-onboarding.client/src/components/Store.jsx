@@ -10,14 +10,23 @@ function Store() {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedStore, setSelectedStore] = useState(null);
+    const [tableData, setTableData] = useState(null);
 
     useEffect(() => {
         fetchStore();
-    }, []);
+
+        if (stores.length > 0) {
+            renderTableData();
+        }
+    }, [stores]);
 
     const fetchStore = async () => {
-        const response = await axios.get('http://localhost:5097/api/stores');
-        setStores(response.data);
+        try {
+            const response = await axios.get('http://localhost:5097/api/stores');
+            setStores(response.data);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const onAddStore = () => {
@@ -26,39 +35,101 @@ function Store() {
     }
 
     const onUpdateStore = (id) => {
-      const store = stores.find(s => s.id === id);
-      setSelectedStore(store);
-      setShowModal(true);
+        if (!id) {
+            console.error('ID is not provided');
+            return;
+        }
+
+        const store = stores.find(s => s.id === id);
+
+        if (!store) {
+            console.error('Store not found');
+            return;
+        }
+
+        setSelectedStore(store);
+        setShowModal(true);
     }
 
     const onDeleteStore = (id) => {
-      const store = stores.find(s => s.id === id);
-      setSelectedStore(store);
-      setShowDeleteModal(true);
+        if (!id) {
+            console.error('ID is not provided');
+            return;
+        }
+
+        const store = stores.find(s => s.id === id);
+
+        if (!store) {
+            console.error('Store not found');
+            return;
+        }
+
+        setSelectedStore(store);
+        setShowDeleteModal(true);
     }
 
     const handleSave = async (store) => {
-      const response = await axios.post('http://localhost:5097/api/stores', store);
-      fetchStore();
-      setShowModal(false);      
+        if (!store) {
+            console.error('Invalid store');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5097/api/stores', store);
+            if (!response.data) {
+                console.error('No data in response');
+                return;
+            }
+            
+            fetchStore();
+            setShowModal(false);
+        } catch (error) {
+            console.error(error);
+        }    
     }
 
     const handleEdit = async (store) => {
-      const response = await axios.put(`http://localhost:5097/api/stores/${store.id}`, store);
-      fetchStore();
-      setShowModal(false);
+        if (!store) {
+            console.error('Invalid store');
+            return;
+        }
+
+        try {
+            const response = await axios.put(`http://localhost:5097/api/stores/${store.id}`, store);
+            if (!response.data) {
+                console.error('No data in response');
+                return;
+            }
+
+            fetchStore();
+            setShowModal(false);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const handleDelete = async (id) => {
-      const response = await axios.delete(`http://localhost:5097/api/stores/${id}`);
-      fetchStore();
-      setShowDeleteModal(false);
+        if (!id) {
+            console.error('ID is not provided');
+            return;
+        }
+
+        try {            
+            const response = await axios.delete(`http://localhost:5097/api/stores/${id}`);
+            if (response.status !== 204) {
+                console.error('Unexpected status code: ' + response.status);
+                return;
+            }
+
+            fetchStore();
+            setShowDeleteModal(false);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    let tableData = null;
-
-    if (stores.length > 0) {
-        tableData = stores.map(store => (
+    const renderTableData = () => {
+        let tableData = stores.map(store => (
             <Table.Row key={store.id}>
                 <Table.Cell>{store.name}</Table.Cell>
                 <Table.Cell>{store.address}</Table.Cell>
@@ -76,6 +147,8 @@ function Store() {
                 </Table.Cell>
             </Table.Row>
         ));
+
+        setTableData(tableData);
     }
 
     return (
@@ -98,18 +171,20 @@ function Store() {
                     {tableData}
                 </Table.Body>
             </Table>
-            <StoreModal show={showModal} 
-                store={selectedStore} 
-                handleSave={handleSave} 
-                handleEdit={handleEdit} 
-                handleClose={() => setShowModal(false)} 
-            />
-            <DeleteModal show={showDeleteModal} 
-                handleClose={() => setShowDeleteModal(false)} 
-                handleDelete={handleDelete} 
-                selectedResource={selectedStore}
-                resourceName='store'
-            />
+            {showModal && <StoreModal show={showModal} 
+                    store={selectedStore} 
+                    handleSave={handleSave} 
+                    handleEdit={handleEdit} 
+                    handleClose={() => setShowModal(false)} 
+                />
+            }
+            {showDeleteModal && <DeleteModal show={showDeleteModal} 
+                    handleClose={() => setShowDeleteModal(false)} 
+                    handleDelete={handleDelete} 
+                    selectedResource={selectedStore}
+                    resourceName='store'
+                />
+            }
         </>
     );
 }

@@ -17,13 +17,7 @@ const SalesModal = (props) => {
   useEffect(() => {
     if (props.sale) {
       const { id, product, customer, store, dateSold } = props.sale;
-      setValues({
-        id: props.sale.id,
-        product: props.sale.product,
-        customer: props.sale.customer,
-        store: props.sale.store,
-        dateSold: props.sale.dateSold
-      });
+      setValues({ id, product, customer, store, dateSold });
     } else {
       setValues({ id: null, 
           product: { id: null, name: '' }, 
@@ -108,9 +102,7 @@ const SalesModal = (props) => {
     }});
   };
 
-  const fieldsValidation = () => {
-    return !salesForm.customer.id || !salesForm.product.id || !salesForm.store.id || !salesForm.dateSold;
-  }
+  const fieldsValidation = !salesForm.customer.id || !salesForm.product.id || !salesForm.store.id || !salesForm.dateSold;
 
   return (
     <>
@@ -140,7 +132,7 @@ const SalesModal = (props) => {
         <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation}>
           Save Changes
           <Icon name='checkmark' />
         </Button>        

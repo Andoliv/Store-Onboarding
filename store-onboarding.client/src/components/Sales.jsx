@@ -10,35 +10,76 @@ function Sales() {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedSale, setSelectedSale] = useState(null);
+    const [tableData, setTableData] = useState(null);
 
 
     useEffect(() => {
         getSales();
-    }, []);
+
+        if (sales.length > 0) {
+            renderTableData();
+        }
+    }, [sales]);
 
     const getSales = async () => {
-        const response = await axios.get('http://localhost:5097/api/sales');
-        setSales(response.data);
+        try {
+            const response = await axios.get('http://localhost:5097/api/sales');            
+            setSales(response.data);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const onAddSale = () => {
         setSelectedSale(null);
         setShowModal(true);
-    }
+    }        
 
     const onUpdateSale = (id) => {
+        if (!id) {
+            console.error('ID is not provided');
+            return;
+        }
+
         const sale = sales.find(s => s.id === id);
+
+        if (!sale) {
+            console.error('Sale not found');
+            return;
+        }
+
         setSelectedSale(sale);
         setShowModal(true);
     }
 
     const onDeleteSale = (id) => {
+        if (!id) {
+            console.error('ID is not provided');
+            return;
+        }
+
         const sale = sales.find(s => s.id === id);
+
+        if (!sale) {
+            console.error('Sale not found');
+            return;
+        }
+
         setSelectedSale(sale);
         setShowDeleteModal(true);
     }
 
     const handleSave = async (sale) => {
+        if (!sale) {
+            console.error('Invalid sale');
+            return;
+        }
+
+        if (!sale.product.id || !sale.customer.id || !sale.store.id) {
+            console.error('Product ID, Customer ID, and Store ID are required');
+            return;
+        }
+
         let saleModelApi = {
             productId: sale.product.id,
             customerId: sale.customer.id,
@@ -46,12 +87,31 @@ function Sales() {
             dateSold: new Date(sale.dateSold).toISOString()
         };
 
-        const response = await axios.post('http://localhost:5097/api/sales', saleModelApi);
-        getSales();
-        setShowModal(false);
+        try {
+            const response = await axios.post('http://localhost:5097/api/sales', saleModelApi);
+            if (!response.data) {
+                console.error('No data in response');
+                return;
+            }
+            
+            getSales();
+            setShowModal(false);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const handleEdit = async (sale) => {
+        if (!sale) {
+            console.error('Invalid sale');
+            return;
+        }
+
+        if (!sale.product.id || !sale.customer.id || !sale.store.id) {
+            console.error('Product ID, Customer ID, and Store ID are required');
+            return;
+        }
+
         let saleModelApi = {
             id: sale.id,
             productId: sale.product.id,
@@ -60,27 +120,51 @@ function Sales() {
             dateSold: new Date(sale.dateSold).toISOString()
         };
 
-        const response = await axios.put(`http://localhost:5097/api/sales/${sale.id}`, saleModelApi);
-        getSales();
-        setShowModal(false);
+        try {
+            const response = await axios.put(`http://localhost:5097/api/sales/${sale.id}`, saleModelApi);
+            if (!response.data) {
+                console.error('No data in response');
+                return;
+            }
+
+            getSales();
+            setShowModal(false);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const handleDelete = async (id) => {
-        const response = await axios.delete(`http://localhost:5097/api/sales/${id}`);
-        getSales();
-        setShowDeleteModal(false);
+        if (!id) {
+            console.error('ID is not provided');
+            return;
+        }
+
+        try {
+            const response = await axios.delete(`http://localhost:5097/api/sales/${id}`);
+            if (response.status !== 204) {
+                console.error('Unexpected status code: ' + response.status);
+                return;
+            }
+
+            getSales();
+            setShowDeleteModal(false);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const formatDate = (datetime) => {
+        if (!datetime) {
+            return new Date().toLocaleDateString('en-GB');
+        }
+
         var options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(datetime).toLocaleDateString('en-GB',options);
     }
 
-    let tableData = null;
-
-    if (sales.length > 0) {
-        tableData = sales.map((sale) => {
-            return (
+    const renderTableData = () => {
+        let tableData = sales.map((sale) =>
                 <Table.Row key={sale.id}>
                     <Table.Cell>{sale.customer.name}</Table.Cell>
                     <Table.Cell>{sale.product.name}</Table.Cell>
@@ -100,14 +184,15 @@ function Sales() {
                     </Table.Cell>
                 </Table.Row>
             );
-        });
+
+        setTableData(tableData);
     }
 
     return (
         <>
             <Home />
             <div style={{textAlign: 'left', padding: '10px 0'}}>
-                <Button color='blue' onClick={onAddSale}>Add Sale</Button>
+                <Button color='blue' onClick={() => onAddSale()}>Add Sale</Button>
             </div>
             <Table celled striped>
                 <Table.Header>
@@ -124,21 +209,22 @@ function Sales() {
                     {tableData}
                 </Table.Body>
             </Table>
-            <SalesModal show={showModal} 
-                sale={selectedSale}
-                handleClose={() => setShowModal(false)}                 
-                handleSave={handleSave} 
-                handleEdit={handleEdit} 
-            />
-            <DeleteModal show={showDeleteModal} 
-                handleClose={() => setShowDeleteModal(false)}                 
-                handleDelete={handleDelete} 
-                selectedResource={selectedSale} 
-                resourceName='sale'
-            />
+            {showModal && <SalesModal show={showModal}
+                    sale={selectedSale}
+                    handleClose={() => setShowModal(false)}                 
+                    handleSave={handleSave} 
+                    handleEdit={handleEdit} 
+                />
+            }
+            {showDeleteModal && <DeleteModal show={showDeleteModal}
+                    handleClose={() => setShowDeleteModal(false)}                 
+                    handleDelete={handleDelete} 
+                    selectedResource={selectedSale} 
+                    resourceName='sale'
+                />
+            }
         </>
     );
-
 }
 
 export default Sales;

@@ -10,11 +10,8 @@ const ProductModal = (props) => {
 
   useEffect(() => {
     if (props.product) {
-      setValues({
-        id: props.product.id,
-        name: props.product.name,
-        price: props.product.price
-      });
+      const { id, name, price } = props.product;
+      setValues({ id, name, price });
     } else {
       setValues({ id: null, name: '', price: '' });
     }
@@ -24,9 +21,7 @@ const ProductModal = (props) => {
     setValues({ ...productForm, [e.target.name]: e.target.value });
   }
 
-  const fieldsValidation = () => {
-    return !productForm.name || !productForm.price || productForm.name.length < 3 || productForm.price < 0.01;
-  }
+  const fieldsValidation = !productForm.name || !productForm.price || productForm.name.length < 3 || productForm.price < 0.01;
 
   let title = props.product ? 'Edit Product' : 'New Product';
   let onSubmit = props.product ? () => props.handleEdit(productForm) : () => props.handleSave(productForm);

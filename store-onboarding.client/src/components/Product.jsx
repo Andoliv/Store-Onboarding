@@ -20,17 +20,11 @@ class Product extends Component {
     getProducts = async () => {
         await axios.get('http://localhost:5097/api/products')
         .then(response => response.data)
-        .then(data => this.setState({ products: data }, () => this.loadTableData()))
-        // .then(data => this.setState(prevState => {
-        //     return {
-        //         ...prevState,
-        //         products: data
-        //     }
-        // }))
+        .then(data => this.setState({ products: data }, () => this.renderTableData()))
         .catch(error => console.log(error));
     }
 
-    loadTableData = async () => {
+    renderTableData = async () => {
         let tableData = null;
         let products = this.state.products;
 
@@ -71,31 +65,95 @@ class Product extends Component {
     }
 
     onUpdateProduct = (id) => {
+        if (!id) {
+            console.error('Invalid product id');
+            return;
+        }
+
         const product = this.state.products.find(c => c.id === id);
+
+        if (!product) {
+            console.error('Product not found');
+            return;
+        }
+
         this.setState({ selectedProduct: product, showModal: true}, () => this.forceUpdateState());
     }
 
     onDeleteProduct = (id) => {
+        if (!id) {
+            console.error('Invalid product id');
+            return;
+        }
+
         const product = this.state.products.find(c => c.id === id);
+
+        if (!product) {
+            console.error('Product not found');
+            return;
+        }
+
         this.setState({ selectedProduct: product, showDeleteModal: true}, () => this.forceUpdateState());
     }
 
     handleSave = async (product) => {
-        const response = await axios.post('http://localhost:5097/api/products', product);
-        this.getProducts();
-        this.setState({ showModal: false }, () => this.forceUpdateState());
+        if (!product) {
+            console.error('Invalid product');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5097/api/products', product);
+            if (!response.data) {
+                console.error('No data in response');
+                return;
+            }
+            
+            this.getProducts();
+            this.setState({ showModal: false }, () => this.forceUpdateState());
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     handleEdit = async (product) => {
-        const response = await axios.put(`http://localhost:5097/api/products/${product.id}`, product);
-        this.getProducts();
-        this.setState({ showModal: false }, () => this.forceUpdateState());
+        if (!product) {
+            console.error('Invalid product');
+            return;
+        }
+
+        try {
+            const response = await axios.put(`http://localhost:5097/api/products/${product.id}`, product);
+            if (!response.data) {
+                console.error('No data in response');
+                return;
+            }
+              
+            this.getProducts();
+            this.setState({ showModal: false }, () => this.forceUpdateState());
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     handleDelete = async (id) => {
-        const response = await axios.delete(`http://localhost:5097/api/products/${id}`);
-        this.getProducts();
-        this.setState({ showDeleteModal: false }, () => this.forceUpdateState());
+        if (!id) {
+            console.error('Invalid product id');
+            return;
+        }
+
+        try {
+            const response = await axios.delete(`http://localhost:5097/api/products/${id}`);
+            if (response.status !== 204) {
+                console.error('Unexpected status code: ' + response.status);
+                return;
+            }
+
+            this.getProducts();
+            this.setState({ showDeleteModal: false }, () => this.forceUpdateState());
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     render() {
@@ -106,19 +164,21 @@ class Product extends Component {
                 <div style={{textAlign: 'left', padding: '10px 0'}}>
                     <Button color='blue' onClick={() => this.onAddProduct()}>New Product</Button>
                 </div>
-                <ProductModal show={this.state.showModal} 
-                    handleClose={() => this.setState({ showModal: false }, () => this.forceUpdateState())} 
-                    handleSave={this.handleSave} 
-                    handleEdit={this.handleEdit} 
-                    handleDelete={this.handleDelete}
-                    product={this.state.selectedProduct}
-                />
-                <DeleteModal show={this.state.showDeleteModal} 
-                    handleClose={() => this.setState({ showDeleteModal: false }, () => this.forceUpdateState())}
-                    handleDelete={this.handleDelete} 
-                    selectedResource={this.state.selectedProduct}
-                    resourceName='product'
-                />
+                {this.state.showModal && <ProductModal show={this.state.showModal} 
+                        handleClose={() => this.setState({ showModal: false }, () => this.forceUpdateState())} 
+                        handleSave={this.handleSave} 
+                        handleEdit={this.handleEdit} 
+                        handleDelete={this.handleDelete}
+                        product={this.state.selectedProduct}
+                    />
+                }
+                {this.state.showDeleteModal && <DeleteModal show={this.state.showDeleteModal}
+                        handleClose={() => this.setState({ showDeleteModal: false }, () => this.forceUpdateState())}
+                        handleDelete={this.handleDelete} 
+                        selectedResource={this.state.selectedProduct}
+                        resourceName='product'
+                    />
+                }
                 <Table celled>
                     <Table.Header>
                         <Table.Row>

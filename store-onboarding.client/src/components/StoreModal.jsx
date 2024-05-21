@@ -11,11 +11,7 @@ const StoreModal = (props) => {
   useEffect(() => {
     if (props.store) {
       const { id, name, address } = props.store;
-      setValues({
-        id: props.store.id,
-        name: props.store.name,
-        address: props.store.address
-      });
+      setValues({ id, name, address });
     } else {
       setValues({ id: null, name: '', address: '' });
     }
@@ -25,9 +21,7 @@ const StoreModal = (props) => {
     setValues({ ...storeForm, [e.target.name]: e.target.value });
   }
 
-  const fieldsValidation = () => {
-    return !storeForm.name || !storeForm.address || storeForm.name.length < 3 || storeForm.address.length < 3;
-  }
+  const fieldsValidation = !storeForm.name || !storeForm.address || storeForm.name.length < 3 || storeForm.address.length < 3;
 
   let title = props.store ? 'Edit Store' : 'New Store';
   let onSubmit = props.store ? () => props.handleEdit(storeForm) : () => props.handleSave(storeForm);
@@ -51,7 +45,7 @@ const StoreModal = (props) => {
         <Button color='black' onClick={props.handleClose}>
           Close
         </Button>
-        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation()}>
+        <Button positive icon onClick={onSubmit} labelPosition='right' disabled={fieldsValidation}>
           Save Changes
           <Icon name='check' />
         </Button>

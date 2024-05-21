@@ -10,11 +10,8 @@ const CustomerModal = (props) => {
 
   useEffect(() => {
     if (props.customer) {
-      setValues({
-        id: props.customer.id,
-        name: props.customer.name,
-        address: props.customer.address
-      });
+      const { id, name, address } = props.customer;
+      setValues({ id, name, address });
     } else {
       setValues({ id: null, name: '', address: '' });
     }
@@ -24,9 +21,7 @@ const CustomerModal = (props) => {
     setValues({ ...customerForm, [e.target.name]: e.target.value });
   }
 
-  const fieldsValidation = () => {
-    return !customerForm.name || !customerForm.address || customerForm.name.length < 3 || customerForm.address.length < 3;
-  }
+  const fieldsValidation = !customerForm.name || !customerForm.address || customerForm.name.length < 3 || customerForm.address.length < 3;
 
   let title = props.customer ? 'Edit Customer' : 'New Customer';
   let onSubmit = props.customer ? () => props.handleEdit(customerForm) : () => props.handleSave(customerForm);
