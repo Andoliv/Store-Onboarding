@@ -21,7 +21,7 @@ class Product extends Component {
         await axios.get('http://localhost:5097/api/products')
         .then(response => response.data)
         .then(data => this.setState({ products: data }, () => this.renderTableData()))
-        .catch(error => console.log(error));
+        .catch(error => console.error(error));
     }
 
     renderTableData = async () => {

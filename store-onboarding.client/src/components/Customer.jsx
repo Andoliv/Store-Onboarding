@@ -10,11 +10,10 @@ function Customer () {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
-    const [tableData, setTableData] = useState(null);
 
     useEffect(() => {
       fetchCustomer();
-    }, [customers]);
+    }, []);
 
     const fetchCustomer = async () => {
       try {
@@ -22,8 +21,6 @@ function Customer () {
         setCustomers(response.data);
       } catch (error) {
         console.error(error);
-      } finally {
-        renderTableData();
       }
     }
 
@@ -128,7 +125,6 @@ function Customer () {
     }
 
     const renderTableData = () => {
-      console.log('renderTableData: Customers');
       if (customers.length > 0) {
         let tableData = customers.map(customer => 
             <Table.Row key={customer.id}>
@@ -139,7 +135,6 @@ function Customer () {
                     <Icon name='edit outline' />
                     Edit
                   </Button>
-                  
               </Table.Cell>
               <Table.Cell>
                   <Button color='red' onClick={() => onDeleteCustomer(customer.id)}>
@@ -148,12 +143,16 @@ function Customer () {
                   </Button>
               </Table.Cell>
             </Table.Row>
-          );    
-        
-        setTableData(tableData);
+          );
 
         return tableData;
-      }      
+      } else {
+        return (
+          <Table.Row>
+              <Table.Cell colSpan='4'>No data found</Table.Cell>
+          </Table.Row>
+      );
+      }
     }
     
 
@@ -189,7 +188,7 @@ function Customer () {
             </Table.Header>
 
             <Table.Body>
-              {tableData}
+              {renderTableData()}
             </Table.Body>
         </Table>
       </>

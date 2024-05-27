@@ -14,13 +14,12 @@ function Store() {
 
     useEffect(() => {
         fetchStore();       
-    }, [stores]);
+    }, []);
 
     const fetchStore = async () => {
         try {
             const response = await axios.get('http://localhost:5097/api/stores');
             setStores(response.data);
-            renderTableData();
         } catch (error) {
             console.error(error);
         }
@@ -126,7 +125,6 @@ function Store() {
     }
 
     const renderTableData = () => {
-        console.log('renderTableData: Stores');
         if (stores.length > 0) {
             let tableData = stores.map(store => (
                 <Table.Row key={store.id}>
@@ -147,7 +145,13 @@ function Store() {
                 </Table.Row>
             ));
 
-            setTableData(tableData);
+            return tableData;
+        } else {
+            return (
+                <Table.Row>
+                    <Table.Cell colSpan='4'>No data found</Table.Cell>
+                </Table.Row>
+            );
         }
     }
 
@@ -168,7 +172,7 @@ function Store() {
                 </Table.Header>
 
                 <Table.Body>
-                    {tableData}
+                    {renderTableData()}
                 </Table.Body>
             </Table>
             {showModal && <StoreModal show={showModal} 

@@ -10,18 +10,16 @@ function Sales() {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedSale, setSelectedSale] = useState(null);
-    const [tableData, setTableData] = useState(null);
 
 
     useEffect(() => {
         getSales();
-    }, [sales]);
+    }, []);
 
     const getSales = async () => {
         try {
             const response = await axios.get('http://localhost:5097/api/sales');            
             setSales(response.data);
-            renderTableData();
         } catch (error) {
             console.error(error);
         }
@@ -161,7 +159,6 @@ function Sales() {
     }
 
     const renderTableData = () => {
-        console.log('renderTableData: Sales');
         if (sales.length > 0) {
             let tableData = sales.map((sale) =>
                 <Table.Row key={sale.id}>
@@ -184,7 +181,13 @@ function Sales() {
                 </Table.Row>
                 );
 
-            setTableData(tableData);
+            return tableData;
+        } else {
+            return (
+                <Table.Row>
+                    <Table.Cell colSpan='6'>No data found</Table.Cell>
+                </Table.Row>
+            );
         }
     }
 
@@ -206,7 +209,7 @@ function Sales() {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {tableData}
+                    {renderTableData()}
                 </Table.Body>
             </Table>
             {showModal && <SalesModal show={showModal}
