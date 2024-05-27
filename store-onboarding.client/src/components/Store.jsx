@@ -18,7 +18,7 @@ function Store() {
 
     const fetchStore = async () => {
         try {
-            const response = await axios.get('http://localhost:5097/api/stores');
+            const response = await axios.get('https://store-onboarding.azurewebsites.net/api/stores');
             setStores(response.data);
         } catch (error) {
             console.error(error);
@@ -71,7 +71,7 @@ function Store() {
         }
 
         try {
-            const response = await axios.post('http://localhost:5097/api/stores', store);
+            const response = await axios.post('https://store-onboarding.azurewebsites.net/api/stores', store);
             if (!response.data) {
                 console.error('No data in response');
                 return;
@@ -91,7 +91,7 @@ function Store() {
         }
 
         try {
-            const response = await axios.put(`http://localhost:5097/api/stores/${store.id}`, store);
+            const response = await axios.put(`https://store-onboarding.azurewebsites.net/api/stores/${store.id}`, store);
             if (!response.data) {
                 console.error('No data in response');
                 return;
@@ -111,7 +111,7 @@ function Store() {
         }
 
         try {            
-            const response = await axios.delete(`http://localhost:5097/api/stores/${id}`);
+            const response = await axios.delete(`https://store-onboarding.azurewebsites.net/api/stores/${id}`);
             if (response.status !== 204) {
                 console.error('Unexpected status code: ' + response.status);
                 return;

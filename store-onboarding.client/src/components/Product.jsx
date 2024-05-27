@@ -18,7 +18,7 @@ class Product extends Component {
     }
 
     getProducts = async () => {
-        await axios.get('http://localhost:5097/api/products')
+        await axios.get('https://store-onboarding.azurewebsites.net/api/products')
         .then(response => response.data)
         .then(data => this.setState({ products: data }, () => this.renderTableData()))
         .catch(error => console.error(error));
@@ -103,7 +103,7 @@ class Product extends Component {
         }
 
         try {
-            const response = await axios.post('http://localhost:5097/api/products', product);
+            const response = await axios.post('https://store-onboarding.azurewebsites.net/api/products', product);
             if (!response.data) {
                 console.error('No data in response');
                 return;
@@ -123,7 +123,7 @@ class Product extends Component {
         }
 
         try {
-            const response = await axios.put(`http://localhost:5097/api/products/${product.id}`, product);
+            const response = await axios.put(`https://store-onboarding.azurewebsites.net/api/products/${product.id}`, product);
             if (!response.data) {
                 console.error('No data in response');
                 return;
@@ -143,7 +143,7 @@ class Product extends Component {
         }
 
         try {
-            const response = await axios.delete(`http://localhost:5097/api/products/${id}`);
+            const response = await axios.delete(`https://store-onboarding.azurewebsites.net/api/products/${id}`);
             if (response.status !== 204) {
                 console.error('Unexpected status code: ' + response.status);
                 return;

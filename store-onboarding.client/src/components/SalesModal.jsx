@@ -41,17 +41,17 @@ const SalesModal = (props) => {
   };
 
   const getCustomers = async () => {
-    const response = await axios.get('http://localhost:5097/api/customers');
+    const response = await axios.get('https://store-onboarding.azurewebsites.net/api/customers');
     setCustomers(response.data);
   }
 
   const getProducts = async () => {
-      const response = await axios.get('http://localhost:5097/api/products');
+      const response = await axios.get('https://store-onboarding.azurewebsites.net/api/products');
       setProducts(response.data);
   }
 
   const getStores = async () => {
-      const response = await axios.get('http://localhost:5097/api/stores');
+      const response = await axios.get('https://store-onboarding.azurewebsites.net/api/stores');
       setStores(response.data);
   }
 

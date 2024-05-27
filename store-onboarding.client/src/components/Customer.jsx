@@ -17,7 +17,7 @@ function Customer () {
 
     const fetchCustomer = async () => {
       try {
-        const response = await axios.get('http://localhost:5097/api/customers');
+        const response = await axios.get('https://store-onboarding.azurewebsites.net/api/customers');
         setCustomers(response.data);
       } catch (error) {
         console.error(error);
@@ -70,7 +70,7 @@ function Customer () {
       }
 
       try {
-        const response = await axios.post('http://localhost:5097/api/customers', customer);
+        const response = await axios.post('https://store-onboarding.azurewebsites.net/api/customers', customer);
         if (!response.data) {
           console.error('No data in response');
           return;
@@ -91,7 +91,7 @@ function Customer () {
       }
 
       try {
-        const response = await axios.put(`http://localhost:5097/api/customers/${customer.id}`, customer);
+        const response = await axios.put(`https://store-onboarding.azurewebsites.net/api/customers/${customer.id}`, customer);
         if (!response.data) {
           console.error('No data in response');
           return;
@@ -111,7 +111,7 @@ function Customer () {
       }
 
       try {
-        const response = await axios.delete(`http://localhost:5097/api/customers/${id}`);
+        const response = await axios.delete(`https://store-onboarding.azurewebsites.net/api/customers/${id}`);
         if (response.status !== 204) {
           console.error('Unexpected status code: ' + response.status);
           return;
