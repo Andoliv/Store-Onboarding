@@ -14,20 +14,17 @@ function Customer () {
 
     useEffect(() => {
       fetchCustomer();
-
-      if (customers.length > 0) {
-        renderTableData();
-      }
     }, [customers]);
 
     const fetchCustomer = async () => {
       try {
         const response = await axios.get('http://localhost:5097/api/customers');
         setCustomers(response.data);
-        renderTableData();
       } catch (error) {
         console.error(error);
-      }        
+      } finally {
+        renderTableData();
+      }
     }
 
     const onAddCustomer = () => {
@@ -131,6 +128,8 @@ function Customer () {
     }
 
     const renderTableData = () => {
+      console.log('renderTableData: Customers');
+      if (customers.length > 0) {
         let tableData = customers.map(customer => 
             <Table.Row key={customer.id}>
               <Table.Cell>{customer.name}</Table.Cell>
@@ -152,6 +151,9 @@ function Customer () {
           );    
         
         setTableData(tableData);
+
+        return tableData;
+      }      
     }
     
 

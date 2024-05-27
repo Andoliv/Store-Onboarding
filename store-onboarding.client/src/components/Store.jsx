@@ -13,17 +13,14 @@ function Store() {
     const [tableData, setTableData] = useState(null);
 
     useEffect(() => {
-        fetchStore();
-
-        if (stores.length > 0) {
-            renderTableData();
-        }
+        fetchStore();       
     }, [stores]);
 
     const fetchStore = async () => {
         try {
             const response = await axios.get('http://localhost:5097/api/stores');
             setStores(response.data);
+            renderTableData();
         } catch (error) {
             console.error(error);
         }
@@ -129,26 +126,29 @@ function Store() {
     }
 
     const renderTableData = () => {
-        let tableData = stores.map(store => (
-            <Table.Row key={store.id}>
-                <Table.Cell>{store.name}</Table.Cell>
-                <Table.Cell>{store.address}</Table.Cell>
-                <Table.Cell>
-                    <Button color='yellow' onClick={() => onUpdateStore(store.id)}>
-                        <Icon name='edit outline' />
-                        Edit
-                    </Button>
-                </Table.Cell>
-                <Table.Cell>
-                    <Button color='red' onClick={() => onDeleteStore(store.id)}>
-                        <Icon name='trash alternate outline' />
-                        Delete
-                    </Button>
-                </Table.Cell>
-            </Table.Row>
-        ));
+        console.log('renderTableData: Stores');
+        if (stores.length > 0) {
+            let tableData = stores.map(store => (
+                <Table.Row key={store.id}>
+                    <Table.Cell>{store.name}</Table.Cell>
+                    <Table.Cell>{store.address}</Table.Cell>
+                    <Table.Cell>
+                        <Button color='yellow' onClick={() => onUpdateStore(store.id)}>
+                            <Icon name='edit outline' />
+                            Edit
+                        </Button>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <Button color='red' onClick={() => onDeleteStore(store.id)}>
+                            <Icon name='trash alternate outline' />
+                            Delete
+                        </Button>
+                    </Table.Cell>
+                </Table.Row>
+            ));
 
-        setTableData(tableData);
+            setTableData(tableData);
+        }
     }
 
     return (

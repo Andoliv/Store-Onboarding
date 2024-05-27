@@ -15,16 +15,13 @@ function Sales() {
 
     useEffect(() => {
         getSales();
-
-        if (sales.length > 0) {
-            renderTableData();
-        }
     }, [sales]);
 
     const getSales = async () => {
         try {
             const response = await axios.get('http://localhost:5097/api/sales');            
             setSales(response.data);
+            renderTableData();
         } catch (error) {
             console.error(error);
         }
@@ -164,7 +161,9 @@ function Sales() {
     }
 
     const renderTableData = () => {
-        let tableData = sales.map((sale) =>
+        console.log('renderTableData: Sales');
+        if (sales.length > 0) {
+            let tableData = sales.map((sale) =>
                 <Table.Row key={sale.id}>
                     <Table.Cell>{sale.customer.name}</Table.Cell>
                     <Table.Cell>{sale.product.name}</Table.Cell>
@@ -183,9 +182,10 @@ function Sales() {
                         </Button>
                     </Table.Cell>
                 </Table.Row>
-            );
+                );
 
-        setTableData(tableData);
+            setTableData(tableData);
+        }
     }
 
     return (
