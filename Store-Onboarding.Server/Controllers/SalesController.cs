@@ -134,9 +134,9 @@ public class SalesController : Controller
                 return BadRequest(ModelState);
             }
 
-            var updatedSale = await _saleService.UpdateSale(request);
+            var updatedSale = await _saleService.UpdateSale(id, request);
 
-            if (updatedSale != null)
+            if (updatedSale == null)
             {
                 _logger.LogError($"Sale with id {id} not found.");
 
