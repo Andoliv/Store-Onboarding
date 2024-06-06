@@ -30,7 +30,11 @@ public class SalesService : ISalesService
 
     public async Task<SalesViewModel> GetSale(int id)
     {
-        var sale = await _context.Sales.FirstOrDefaultAsync(sale => sale.Id == id);
+        var sale = await _context.Sales
+            .Include(sale => sale.Customer)
+            .Include(sale => sale.Product)
+            .Include(sale => sale.Store)
+            .FirstOrDefaultAsync(sale => sale.Id == id);
 
         if (sale == null)
         {
@@ -52,9 +56,9 @@ public class SalesService : ISalesService
         return _mapper.Map<SalesViewModel>(sale);
     }
 
-    public async Task<SalesViewModel> UpdateSale(CreateSalesRequest request)
+    public async Task<SalesViewModel> UpdateSale(int id, CreateSalesRequest request)
     {
-        var saleToUpdate = await _context.Sales.FirstOrDefaultAsync(sale => sale.Id == request.Id);
+        var saleToUpdate = await _context.Sales.FirstOrDefaultAsync(sale => sale.Id == id);
 
         if (saleToUpdate == null)
         {
@@ -67,7 +71,9 @@ public class SalesService : ISalesService
         _context.Sales.Update(saleToUpdate);
         await _context.SaveChangesAsync();
 
-        return _mapper.Map<SalesViewModel>(saleToUpdate);
+        var updatedSale = await GetSale(id);
+
+        return updatedSale;
     }
 
     public async Task DeleteSale(int id)

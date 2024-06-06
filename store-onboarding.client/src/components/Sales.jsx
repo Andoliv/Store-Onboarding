@@ -108,7 +108,6 @@ function Sales() {
         }
 
         let saleModelApi = {
-            id: sale.id,
             productId: sale.product.id,
             customerId: sale.customer.id,
             storeId: sale.store.id,

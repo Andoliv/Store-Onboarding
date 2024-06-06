@@ -13,7 +13,8 @@ class Product extends Component {
             products: [],
             tableData: null,
             selectedProduct: null,
-            showDeleteModal: false
+            showDeleteModal: false,
+            forceUpdate: false
         }
     }
 
@@ -53,7 +54,7 @@ class Product extends Component {
     }
 
     forceUpdateState() {
-        console.log('forceUpdateState');
+        this.setState({ forceUpdate: !this.state.forceUpdate });
     }
 
     componentDidMount() {
